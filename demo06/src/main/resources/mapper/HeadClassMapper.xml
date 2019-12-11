@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mybatis.demo06.Dao.HeadClassDao">
+    <!--一对一的对应关系-->
+    <resultMap id="teachermap" type="com.example.mybatis.demo06.Entity.HeadTeacher">
+        <id property="tid" column="ht_id"/>
+        <result property="tname" column="ht_name"/>
+        <result property="tage" column="ht_age"/>
+    </resultMap>
+    <resultMap id="classmap" type="com.example.mybatis.demo06.Entity.HeadClass">
+        <id property="cid" column="hc_id"/>
+        <result property="cname" column="hc_name"/>
+        <association property="headTeachers" column="ht_id" resultMap="teachermap"/>
+    </resultMap>
+
+    <select id="selectClassById" resultMap="classmap">
+        SELECT *FROM
+        headclass hc,headtecher ht
+        WHERE hc.ht_id=ht.ht_id
+        AND hc.hc_id=#{id}
+    </select>
+    <select id="getHeadTeacher" resultMap="teachermap">
+        select * from headtecher
+    </select>
+
+    <!--一对多的对应关系-->
+    <resultMap id="classmap2" type="com.example.mybatis.demo06.Entity.HeadClass">
+        <id property="cid" column="hc_id"/>
+        <result property="cname" column="hc_name"/>
+        <association property="headTeachers" column="ht_id" resultMap="teachermap"/>
+        <collection property="students" ofType="com.example.mybatis.demo06.Entity.Student">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="sex" column="sex"/>
+            <result property="age" column="age"/>
+        </collection>
+    </resultMap>
+    <select id="selectClassAndStudentById" resultMap="classmap2">
+        SELECT
+        *FROM
+        headclass hc,student s,headtecher ht
+        WHERE
+        hc.hc_id=s.c_id AND hc.ht_id=ht.ht_id
+        AND
+        hc.hc_id=#{id}
+    </select>
+
+</mapper>
